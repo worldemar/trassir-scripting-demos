@@ -1,3 +1,37 @@
+# Tetris game implementation using plain subtitles
+"""
+<parameters>
+	<company>woldemar@mimas.ru</company>
+	<title>Trassir Tetris</title>
+	<version>1.0</version>
+
+	<parameter>
+	  <type>string</type>
+	  <id>OPT_KEY_UP</id>
+	  <name>Key UP / ROTATE</name>
+	  <value>F7</value>
+	</parameter>
+	<parameter>
+	  <type>string</type>
+	  <id>OPT_KEY_DOWN</id>
+	  <name>Key DOWN / DROP</name>
+	  <value>F6</value>
+	</parameter>
+	<parameter>
+	  <type>string</type>
+	  <id>OPT_KEY_LEFT</id>
+	  <name>Key LEFT</name>
+	  <value>F5</value>
+	</parameter>
+	<parameter>
+	  <type>string</type>
+	  <id>OPT_KEY_RIGHT</id>
+	  <name>Key RIGHT</name>
+	  <value>F8</value>
+	</parameter>
+</parameters>
+"""
+
 import time
 import random
 
@@ -274,10 +308,10 @@ def key_down():
 	global buttons
 	buttons.append("D")
 
-activate_on_shortcut("F5", key_left)
-activate_on_shortcut("F6", key_down)
-activate_on_shortcut("F7", key_up)
-activate_on_shortcut("F8", key_right)
+activate_on_shortcut(OPT_KEY_LEFT, key_left)
+activate_on_shortcut(OPT_KEY_DOWN, key_down)
+activate_on_shortcut(OPT_KEY_UP, key_up)
+activate_on_shortcut(OPT_KEY_RIGHT, key_right)
 
 # drawing helper functions
 
