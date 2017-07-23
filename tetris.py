@@ -29,6 +29,13 @@
 	  <name>Key RIGHT</name>
 	  <value>F8</value>
 	</parameter>
+	<parameter>
+	  <type>string</type>
+	  <id>OPT_CHANNEL</id>
+	  <name>Output channel guid
+(leave empty to select from game menu)</name>
+	  <value></value>
+	</parameter>
 </parameters>
 """
 
@@ -88,6 +95,7 @@ class TextScreen:
 		global color
 		global colors
 		global channel
+		global OPT_CHANNEL
 		f = ""
 		sxb = (self.scalex - 1) / 2
 		sxa = self.scalex - 1 - sxb
@@ -108,8 +116,13 @@ class TextScreen:
 			f += lineg * syb
 			f += linet
 			f += lineg * sya
-		channels = settings("channels").ls()
-		text_add(channels[channel % len(channels)].guid, f, 0, 0, 100, 100, self.width * self.scalex, colors[color])
+		channel_guid = ""
+		if OPT_CHANNEL != "":
+			channel_guid = OPT_CHANNEL
+		else:
+			channels = settings("channels").ls()
+			channel_guid = channels[channel % len(channels)].guid
+		text_add(channel_guid, f, 0, 0, 100, 100, self.width * self.scalex, colors[color])
 
 	def bloom(self, x1, y1, x2, y2):
 		ret = False
@@ -654,8 +667,10 @@ menu_items = [
 {"name": menu_item_sw,     "L": menu_item_sw_less,    "R": menu_item_sw_more },
 {"name": menu_item_sh,     "L": menu_item_sh_less,    "R": menu_item_sh_more },
 {"name": menu_item_color,  "L": menu_item_color_less, "R": menu_item_color_more },
-{"name": lambda: "OUTPUT", "L": menu_item_channel_less, "R": menu_item_channel_more },
 ]
+
+if OPT_CHANNEL == "":
+	menu_items.append({"name": lambda: "OUTPUT", "L": menu_item_channel_less, "R": menu_item_channel_more })
 
 def menu():
 	global screen
