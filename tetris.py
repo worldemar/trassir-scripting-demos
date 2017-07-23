@@ -172,7 +172,7 @@ class TetrisWell:
 		for x in xrange(0, len(data[0])):
 			for y in xrange(0, len(data[0])):
 				if data[y][x] == "1":
-					if (y1 + y) < 0 or (y1 + y) >= self.height:
+					if (y1 + y) >= self.height:
 						return True
 					if (x1 + x) < 0 or (x1 + x) >= self.width:
 						return True
