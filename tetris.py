@@ -481,9 +481,7 @@ def game_start():
 	global statistics
 	score = 0
 	statistics = {1: 0, 2: 0, 3: 0, 4: 0}
-	screen.clear(0)
-	well.draw()
-	screen.blit()
+	transitions.append(transition_wellfade)
 	transitions.append(transition_wellbloom)
 	transitions.append(transition_wellfade)
 	transitions.append(play)
@@ -563,7 +561,7 @@ def menu_item_sw_less():
 
 def menu_item_color():
 	global color
-	return "COLOR: %d" % color
+	return "CLR: %d" % color
 
 def menu_item_color_more():
 	global color
@@ -604,13 +602,13 @@ def menu_item_channel_less():
 menu_current_item = 0
 
 menu_items = [
-{"name": lambda: "START ", "L": None,                 "R": game_start },
+{"name": lambda: "START!", "L": None,                 "R": game_start },
 {"name": menu_item_wellx,  "L": menu_item_wellx_less, "R": menu_item_wellx_more },
 {"name": menu_item_welly,  "L": menu_item_welly_less, "R": menu_item_welly_more },
 {"name": menu_item_sw,     "L": menu_item_sw_less,    "R": menu_item_sw_more },
 {"name": menu_item_sh,     "L": menu_item_sh_less,    "R": menu_item_sh_more },
 {"name": menu_item_color,  "L": menu_item_color_less, "R": menu_item_color_more },
-{"name": lambda: "OUTPUT","L": menu_item_channel_less, "R": menu_item_channel_more },
+{"name": lambda: "OUTPUT", "L": menu_item_channel_less, "R": menu_item_channel_more },
 ]
 
 def menu():
@@ -619,7 +617,7 @@ def menu():
 	global buttons
 	global menu_current_item
 
-	screen = TextScreen(width = screen_width, height = screen_height, scalex = scale_x, scaley = scale_y)
+	now = time.time()
 
 	for b in buttons:
 		if b == "U":
@@ -640,14 +638,31 @@ def menu():
 				return
 	buttons = []
 
+	screen = TextScreen(width = screen_width, height = screen_height, scalex = scale_x, scaley = scale_y)
 	screen.clear(0)
 	well.draw()
 
-	go_y = well_y + (well_height - 1) / 2 - 2
+	go_y = well_y + (well_height - 1) / 2 - 1
+
+	screen.draw_pixel(well_x + 3, go_y - 5, 4)
+	screen.draw_pixel(well_x + 3, go_y - 6, 4)
+	screen.draw_pixel(well_x + 3, go_y - 7, 4)
+	screen.draw_pixel(well_x + 2, go_y - 7, 4)
+	screen.draw_pixel(well_x + 4, go_y - 7, 4)
+
+	screen.draw_pixel(well_x + 7, go_y - 7, 4)
+	screen.draw_pixel(well_x + 7, go_y - 6, 4)
+	screen.draw_pixel(well_x + 8, go_y - 6, 4)
+	screen.draw_pixel(well_x + 9, go_y - 7, 4)
+	screen.draw_pixel(well_x + 9, go_y - 6, 4)
+	screen.draw_pixel(well_x + 9, go_y - 5, 4)
+
+	screen.draw_text(well_x, go_y - 3, well_x + well_width + 2, go_y - 3, "=TETRIS=")
+
 	for m in xrange(len(menu_items)):
 		name = menu_items[m]["name"]()
-		if menu_current_item == m:
-			name = ">" + name + "<"
+		if menu_current_item == m and int(now*4) % 2 == 0:
+			name = ">>" + name + "<<"
 		screen.draw_text(well_x, go_y + m, well_x + well_width + 2, go_y + m, name)
 
 	draw_score()
