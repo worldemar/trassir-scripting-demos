@@ -296,6 +296,13 @@ def draw_statistics():
 	for i in statistics.keys():
 		screen.draw_text(well_x + 13, well_y + 4 + i, well_x + 25, well_y + 4 + i, "%d-LINES: %03d" % (i, statistics[i]))
 
+def draw_level():
+	global screen
+	global level
+	global well_x
+	global well_y
+	for i in statistics.keys():
+		screen.draw_text(well_x + 13, well_y + 10, well_x + 25, well_y + 10, "LEVEL %03d" % level)
 
 # transitions and animations
 
@@ -347,6 +354,7 @@ def transition_wellbloom():
 
 # play screen
 
+level = 0
 piece_next = None
 piece = None
 piece_last_gravity = 0
@@ -359,6 +367,7 @@ def play():
 	global screen
 	global well
 	global buttons
+	global level
 	global piece
 	global piece_next
 	global piece_x
@@ -397,41 +406,39 @@ def play():
 				piece_y += 1
 	buttons = []
 
-	if piece_last_gravity + 0.5 < now:
+	if piece_last_gravity + max(1/12.0, 1/12.0 + 1 - level / 500.0 ) < now:
 		if well.piece_collide(piece_x, piece_y + 1, piece):
 			if piece_y == -1:
-				well = TetrisWell()
 				piece = None
 				transitions.append(transition_welldrown)
 				transitions.append(transition_wellfade)
 				transitions.append(gameover)
-				transition_next()
-				return
-			well.piece_place(piece_x, piece_y, piece)
-			piece = None
-			lines = well.count_full_lines()
-			if lines > 0:
-				transitions.append(transition_wellfadelines)
-				transitions.append(play)
-				transition_next()
-				return
-			timeout(0, play)
-			return
+			else:
+				well.piece_place(piece_x, piece_y, piece)
+				piece = None
+				level += 1
+				lines = well.count_full_lines()
+				if lines > 0:
+					transitions.append(transition_wellfadelines)
+					transitions.append(play)
 		else:
 			piece_y += 1
 			piece_last_gravity = now
-			timeout(0, play)
-			return
 
 	screen.clear(0)
 	well.draw()
-	piece.draw(well_x + piece_x + 1, well_y + piece_y + 1)
+	if piece is not None:
+		piece.draw(well_x + piece_x + 1, well_y + piece_y + 1)
 	screen.draw_text(well_x + 13, well_y, well_x + 20, well_y, "NEXT")
 	piece_next.draw(well_x + 13, well_y + 1)
 	draw_score()
 	draw_statistics()
+	draw_level()
 	screen.blit()
-	timeout(0, play)
+	if len(transitions) > 0:
+		transition_next()
+	else:
+		timeout(0, play)
 
 # game over
 
@@ -443,6 +450,8 @@ def gameover():
 	global statistics
 
 	now = time.time()
+
+	well = TetrisWell()
 
 	for b in buttons:
 		if b in "LRUD":
@@ -470,6 +479,7 @@ def gameover():
 
 	draw_score()
 	draw_statistics()
+	draw_level()
 
 	screen.blit()
 	timeout(0, gameover)
@@ -477,8 +487,10 @@ def gameover():
 # main menu
 
 def game_start():
+	global level
 	global score
 	global statistics
+	level = 0
 	score = 0
 	statistics = {1: 0, 2: 0, 3: 0, 4: 0}
 	transitions.append(transition_wellfade)
@@ -667,6 +679,7 @@ def menu():
 
 	draw_score()
 	draw_statistics()
+	draw_level()
 
 	screen.blit()
 	timeout(0, menu)
