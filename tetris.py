@@ -51,6 +51,8 @@ class TextScreen:
 		self.clear(0)
 
 	def blit(self):
+		global color
+		global colors
 		f = ""
 		sxb = (self.scalex - 1) / 2
 		sxa = self.scalex - 1 - sxb
@@ -71,7 +73,7 @@ class TextScreen:
 			f += lineg * syb
 			f += linet
 			f += lineg * sya
-		text_add("fdt6vb3G", f, 0, 0, 100, 100, self.width * self.scalex, "FFFFFF")
+		text_add("fdt6vb3G", f, 0, 0, 100, 100, self.width * self.scalex, colors[color])
 
 	def bloom(self, x1, y1, x2, y2):
 		ret = False
@@ -244,6 +246,8 @@ well_width = 10
 well_height = 20
 screen_width = 45
 screen_height = 25
+color = 6
+colors = ["000000", "0000FF", "FF0000", "FF00FF", "00FF00", "00FFFF", "FFFF00", "FFFFFF"]
 screen = TextScreen(width = screen_width, height = screen_height, scalex = scale_x, scaley = scale_y)
 well = TetrisWell()
 
@@ -554,6 +558,26 @@ def menu_item_sw_less():
 		screen_width = 15
 	timeout(0, menu)
 
+def menu_item_color():
+	global color
+	return "COLOR: %d" % color
+
+def menu_item_color_more():
+	global color
+	global colors
+	color += 1
+	if color >= len(colors):
+		color = 0
+	timeout(0, menu)
+
+def menu_item_color_less():
+	global color
+	global colors
+	color -= 1
+	if color < 0:
+		color = len(colors) - 1
+	timeout(0, menu)
+
 menu_current_item = 0
 
 menu_items = [
@@ -562,6 +586,7 @@ menu_items = [
 {"name": menu_item_welly,  "L": menu_item_welly_less, "R": menu_item_welly_more },
 {"name": menu_item_sw,     "L": menu_item_sw_less,    "R": menu_item_sw_more },
 {"name": menu_item_sh,     "L": menu_item_sh_less,    "R": menu_item_sh_more },
+{"name": menu_item_color,  "L": menu_item_color_less, "R": menu_item_color_more },
 ]
 
 def menu():
