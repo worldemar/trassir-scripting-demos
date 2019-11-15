@@ -122,7 +122,7 @@ class TextScreen:
 		else:
 			channels = settings("channels").ls()
 			channel_guid = channels[channel % len(channels)].guid
-		text_add(channel_guid, f, 0, 0, 100, 100, self.width * self.scalex, colors[color])
+		text_set(channel_guid, f, 0, 0, 100, 100, self.width * self.scalex, colors[color])
 
 	def bloom(self, x1, y1, x2, y2):
 		ret = False
